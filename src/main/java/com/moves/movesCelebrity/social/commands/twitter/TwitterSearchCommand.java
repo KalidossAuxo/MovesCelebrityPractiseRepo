@@ -40,18 +40,30 @@ public class TwitterSearchCommand implements Command<ArrayList<Document>, String
     }
 
     public ArrayList<Document> search(String searchQuery, Integer count) {
+        String tweets1 = "";
         Query query = new Query();
         query.setLang("en");
         query.setQuery(searchQuery);
         query.setCount(count);
         query.setSince("2018-08-01");
-        query.setUntil("2018-09-05");
+        query.setUntil("2018-09-20");
         QueryResult result;
         try {
             result = twitter.search(query);
             List<Status> tweets = result.getTweets();
 
             logger.info("\ntweets:: " + tweets.size());
+            for (Status tweet : tweets) {
+
+                tweets1 = tweets1 + tweet.getUser().getScreenName() + " - " + tweet.getText();
+
+                System.out.println(tweets1);
+                System.out.println("Retweet Count : " + tweet.getRetweetCount());
+                System.out.println("Favorite Count : " + tweet.getFavoriteCount());
+                System.out.println("twitter.com/SKDoss18/status/"+tweet.getId());
+                System.out.println("*****************************************************************************");
+
+            }
             System.out.println(tweets.size());
 
         } catch (TwitterException e) {
