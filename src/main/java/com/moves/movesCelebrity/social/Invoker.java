@@ -46,6 +46,10 @@ public class Invoker {
            commands.put("twitter.posts.insights.write" , new TwitterPostInsightWriteCommand());
            commands.put("twitter.posts.search.fetch" , new TwitterSearchCommand());
 
+           commands.put("twitter.posts.media.fetch", new TwitterStatusMediaUpdateCommand());
+            commands.put("twitter.posts.media.write", new TwitterStatusMediaUpdateCommand());
+            commands.put("twitter.posts.media.write", new TwitterStatusMediaUpdateWriteCommand());
+
             return commands;
 
         }).thenAccept(stringCommandMap -> logger.info("Commands registered " + commands.toString()));

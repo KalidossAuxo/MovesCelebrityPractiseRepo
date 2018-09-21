@@ -56,7 +56,7 @@ public class TwitterHomePostFetchCommand implements Command<ArrayList<Document>,
         mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
         List<Status> statuses = twitter.getHomeTimeline(paging);
 
-        status = mapper.readValue(gson.toJson(statuses), new com.fasterxml.jackson.core.type.TypeReference<List<Document>>() {
+        status = mapper.readValue(gson.toJson(statuses), new TypeReference<List<Document>>() {
         });
         return status;
     }
