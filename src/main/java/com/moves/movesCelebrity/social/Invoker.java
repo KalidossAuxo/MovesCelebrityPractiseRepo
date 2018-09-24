@@ -47,8 +47,12 @@ public class Invoker {
            commands.put("twitter.posts.search.fetch" , new TwitterSearchCommand());
 
            commands.put("twitter.posts.media.fetch", new TwitterStatusMediaUpdateCommand());
-            commands.put("twitter.posts.media.write", new TwitterStatusMediaUpdateCommand());
-            commands.put("twitter.posts.media.write", new TwitterStatusMediaUpdateWriteCommand());
+           commands.put("twitter.posts.media.write", new TwitterStatusMediaUpdateCommand());
+           commands.put("twitter.posts.media.write", new TwitterStatusMediaUpdateWriteCommand());
+           commands.put("twitter.posts.followers.fetch" , new TwitterFetchFollowers2());
+           commands.put("twitter.posts.followers.write" , new TwitterFollowersWriteCommand());
+           commands.put("twitter.posts.following.fetch" , new TwitterFetchFollowing());
+           commands.put("twitter.posts.following.write" , new TwitterFollowingWriteCommand());
 
             return commands;
 

@@ -14,6 +14,8 @@ public class MovesConfiguration extends Configuration{
     public static final String COLLECTION_POSTS_STATUS_TWITTER = "statusPostsTwitter";
     public static final String COLLECTION_POSTS_MEDIA_STATUS_TWITTER = "statusMediaPostsTwitter";
     public static final String COLLECTION_POSTS_HOME_INSIGHTS_TWITTER = "postsInsightsTwitter";
+    public static final String COLLECTION_FOLLOWERS_TWITTER = "followersTwitter";
+    public static final String COLLECTION_FOLLOWING_TWITTER = "followingTwitter";
 
     public static final String DB_NAME = "movesCelebrity";
 

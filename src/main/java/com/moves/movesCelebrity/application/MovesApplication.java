@@ -26,9 +26,9 @@ public class MovesApplication extends Application<MovesConfiguration> {
         Invoker invoker = Invoker.getInstance();
         CompletableFuture future = invoker.init().thenComposeAsync(aVoid-> {
             //return invoker.execute("twitter.status.write","Latest tweet");
-            return invoker.execute("twitter.posts.media.fetch", "Hi");
+            return invoker.execute("twitter.posts.following.fetch", "SKDoss18");
         }).thenComposeAsync(docs->{
-            return invoker.execute("twitter.posts.media.write" , docs);
+            return invoker.execute("twitter.posts.following.write" , docs);
         });
         future.get();
     }
