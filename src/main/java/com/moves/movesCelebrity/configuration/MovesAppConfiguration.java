@@ -20,6 +20,7 @@ public class MovesAppConfiguration extends Configuration{
     public static final String DB_NAME = "movesCelebrity";
 
     public static final Map<String,String> PLATFORM_MAP ;
+
     public static final String ERROR_UNEXPECTED =
             "Unable to process the request at the moment. Please try after some time";
 
