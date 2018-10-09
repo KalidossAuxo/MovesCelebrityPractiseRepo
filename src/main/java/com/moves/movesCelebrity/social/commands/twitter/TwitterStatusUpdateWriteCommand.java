@@ -3,7 +3,7 @@ package com.moves.movesCelebrity.social.commands.twitter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.moves.movesCelebrity.configuration.MovesConfiguration;
+import com.moves.movesCelebrity.configuration.MovesAppConfiguration;
 import com.moves.movesCelebrity.dao.SocialMediaPostDao;
 import com.moves.movesCelebrity.social.types.Command;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonDeserializer;
@@ -33,8 +33,8 @@ public class TwitterStatusUpdateWriteCommand implements Command<Void,Document>{
     }
 
     public void insert(Document document) {
-        //SocialMediaPostDao.insert(document, MovesConfiguration.COLLECTION_POSTS_TWITTER);
-        SocialMediaPostDao.insert(document, MovesConfiguration.COLLECTION_POSTS_STATUS_TWITTER);
+        //SocialMediaPostDao.insert(document, MovesAppConfiguration.COLLECTION_POSTS_TWITTER);
+        SocialMediaPostDao.insert(document, MovesAppConfiguration.COLLECTION_POSTS_STATUS_TWITTER);
     }
 }
 

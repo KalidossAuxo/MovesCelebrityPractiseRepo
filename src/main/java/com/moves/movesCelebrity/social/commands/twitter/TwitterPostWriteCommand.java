@@ -2,7 +2,7 @@ package com.moves.movesCelebrity.social.commands.twitter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.moves.movesCelebrity.configuration.MovesConfiguration;
+import com.moves.movesCelebrity.configuration.MovesAppConfiguration;
 import com.moves.movesCelebrity.dao.SocialMediaPostDao;
 import com.moves.movesCelebrity.social.types.Command;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonDeserializer;
@@ -33,6 +33,6 @@ public class TwitterPostWriteCommand implements Command<Void, ArrayList<Document
     }
 
     public void insert(ArrayList<Document> documents) {
-        SocialMediaPostDao.insertMany(documents, MovesConfiguration.COLLECTION_POSTS_STATUS_TWITTER);
+        SocialMediaPostDao.insertMany(documents, MovesAppConfiguration.COLLECTION_POSTS_STATUS_TWITTER);
     }
 }

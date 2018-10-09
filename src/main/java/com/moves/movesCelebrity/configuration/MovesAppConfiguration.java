@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MovesConfiguration extends Configuration{
+public class MovesAppConfiguration extends Configuration{
 
     public static final String COLLECTION_POSTS_TWITTER = "postsTwitter";
     public static final String COLLECTION_TRENDS_TWITTER = "trendsTwitter";
@@ -20,6 +20,8 @@ public class MovesConfiguration extends Configuration{
     public static final String DB_NAME = "movesCelebrity";
 
     public static final Map<String,String> PLATFORM_MAP ;
+    public static final String ERROR_UNEXPECTED =
+            "Unable to process the request at the moment. Please try after some time";
 
     static {
 
