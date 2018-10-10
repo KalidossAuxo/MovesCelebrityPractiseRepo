@@ -2,6 +2,7 @@ package com.moves.movesCelebrity.dao;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.moves.movesCelebrity.models.api.user.UserAccessTokenTwitter;
 import com.moves.movesCelebrity.models.api.user.UserProfile;
 import com.moves.movesCelebrity.models.business.user.User;
 import com.moves.movesCelebrity.services.db.DBService;
@@ -27,6 +28,13 @@ public class UserDao {
 
     public static Object insert(UserProfile profile, String collectionName) {
         String json = gson.toJson(profile);
+        Document doc = mongoService.insert(collectionName,Document.parse(json));
+        return doc;
+    }
+
+    //To insert Authentication Details(User Id and Access token)
+    public static Object insert(UserAccessTokenTwitter auth, String collectionName) {
+        String json = gson.toJson(auth);
         Document doc = mongoService.insert(collectionName,Document.parse(json));
         return doc;
     }

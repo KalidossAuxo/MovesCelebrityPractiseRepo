@@ -31,6 +31,9 @@ public class MovesAppConfiguration extends Configuration{
         aMap.put("instagram", "408096151.9437cac.ab7a30150efe44fb81d5dc83ffa16543");
         aMap.put("twitter.trends", "Mumbai");
         aMap.put("instagram.trends", "lat=48.858844&lng=2.294351");
+        aMap.put("twitter.status", "Hey, just playing with twitter 4j");
+
+
 
         PLATFORM_MAP = Collections.unmodifiableMap(aMap);
 

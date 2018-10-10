@@ -1,8 +1,12 @@
 package com.moves.movesCelebrity.social.models;
 
-import java.util.HashMap;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+import java.util.HashMap;
+@ApiModel
 public class TwitterPost {
+    @ApiModelProperty(value="posts",required = true)
     private HashMap<String, Object> posts;
 
     public HashMap<String, Object> getPosts() {

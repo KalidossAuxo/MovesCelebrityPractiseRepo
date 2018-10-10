@@ -62,12 +62,12 @@ public class TwitterFetchFollowers2 implements Command<ArrayList<Document>, Stri
         long[] ids = followerIds.getIDs();
 
         for (long id : ids) {
-       TwitterFollowers follower = new TwitterFollowers();
+            TwitterFollowers follower = new TwitterFollowers();
             twitter4j.User user = twitter.showUser(id);
 
-           follower.setFollowerId(user.getId());
-           follower.setFollowerName(user.getName());
-           follower.setFollowerScreenName(user.getScreenName());
+            follower.setFollowerId(user.getId());
+            follower.setFollowerName(user.getName());
+            follower.setFollowerScreenName(user.getScreenName());
 
             post.add(follower);
         }
@@ -76,4 +76,4 @@ public class TwitterFetchFollowers2 implements Command<ArrayList<Document>, Stri
         return posts;
     }
 
-   }
+}

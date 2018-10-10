@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static java.util.Arrays.asList;
 
+
 public class TwitterFetchFollowers implements Command<ArrayList<Document>,String>{
 
     private Twitter twitter = TwitterFactory.getSingleton();

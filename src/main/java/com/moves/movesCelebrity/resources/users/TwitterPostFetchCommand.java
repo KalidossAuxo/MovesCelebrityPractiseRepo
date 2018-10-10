@@ -1,4 +1,4 @@
-package com.moves.movesCelebrity.social.commands.twitter;
+package com.moves.movesCelebrity.resources.users;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -7,21 +7,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.moves.movesCelebrity.models.api.APIResponse;
 import com.moves.movesCelebrity.social.models.TwitterPost;
 import com.moves.movesCelebrity.social.types.Command;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonDeserializer;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonSerializer;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.*;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@Path("/twitter")
+@Api(value = "User Posts")
 public class TwitterPostFetchCommand implements Command<ArrayList<Document>, String> {
 
     //private twitter4j.Twitter twitter = TwitterFactory.getSingleton();
@@ -65,8 +76,11 @@ public class TwitterPostFetchCommand implements Command<ArrayList<Document>, Str
         return posts;
     }
 
-
-    public ArrayList<TwitterPost> fetch(String screenName) throws TwitterException, IOException {
+    @GET
+    @Path("/userPosts")
+    @ApiOperation(value = "User Posts",response = APIResponse.class)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ArrayList<TwitterPost> fetch(@ApiParam(value="Screen Name",required = true) @PathParam("screenName") String screenName) throws TwitterException, IOException {
 
         Integer page = 1;
         Integer count = 2000;

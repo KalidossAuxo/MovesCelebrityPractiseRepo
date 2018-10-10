@@ -2,6 +2,7 @@ package com.moves.movesCelebrity.application;
 
 import com.moves.movesCelebrity.configuration.MovesAPISystemConfiguration;
 import com.moves.movesCelebrity.resources.HealthCheckResource;
+import com.moves.movesCelebrity.resources.authentication.twitter.TwitterAuthDetails;
 import com.moves.movesCelebrity.resources.users.UserResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -42,6 +43,8 @@ public class MovesApplication extends Application<MovesAPISystemConfiguration> {
 
         environment.jersey().register(new HealthCheckResource());
         environment.jersey().register(new UserResource());
+        environment.jersey().register(new TwitterAuthDetails());
+
         /*Map<String ,String > platformMap = MovesAppConfiguration.PLATFORM_MAP;
         ArrayList<CompletableFuture> futureList = new ArrayList<>();
         Invoker invoker = Invoker.getInstance();
