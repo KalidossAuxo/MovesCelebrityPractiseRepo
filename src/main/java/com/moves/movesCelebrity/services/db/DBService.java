@@ -55,7 +55,6 @@ public class DBService implements DBServiceInterface {
             if (mongoCursor.hasNext()) {
                 return (mongoCursor.next());
             }
-
         return null;
     }
 
