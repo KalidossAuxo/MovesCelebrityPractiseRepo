@@ -53,7 +53,7 @@ public class TwitterPostFetchCommand implements Command<ArrayList<Document>, Str
         return CompletableFuture.supplyAsync(() -> {
             ArrayList<Document> posts = null;
             try {
-                posts = fetch(screenName,1,200);
+                posts = fetch(screenName);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -62,8 +62,16 @@ public class TwitterPostFetchCommand implements Command<ArrayList<Document>, Str
         });
     }
 
-    public ArrayList<Document> fetch(String screenName, Integer page, Integer count) throws TwitterException, IOException {
+
+    @GET
+    @Path("/userPosts/{screenName}")
+    @ApiOperation(value = "User Posts",response = APIResponse.class)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ArrayList<Document> fetch(@ApiParam(value="Screen Name",required = true) @PathParam("screenName") String screenName) throws TwitterException, IOException {
         logger.info("Twitter fetch function called");
+
+        Integer page = 1;
+        Integer count = 2000;
         Paging paging = new Paging(page, count);
         ArrayList<Document> posts;
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -76,13 +84,9 @@ public class TwitterPostFetchCommand implements Command<ArrayList<Document>, Str
         return posts;
     }
 
-    @GET
-    @Path("/userPosts")
-    @ApiOperation(value = "User Posts",response = APIResponse.class)
-    @Produces(MediaType.APPLICATION_JSON)
-    public ArrayList<TwitterPost> fetch(@ApiParam(value="Screen Name",required = true) @PathParam("screenName") String screenName) throws TwitterException, IOException {
+    public ArrayList<TwitterPost> fetch( String screenName,int page) throws TwitterException, IOException {
 
-        Integer page = 1;
+        page = 1;
         Integer count = 2000;
         Paging paging = new Paging(page, count);
         List<Status> statuses = null;

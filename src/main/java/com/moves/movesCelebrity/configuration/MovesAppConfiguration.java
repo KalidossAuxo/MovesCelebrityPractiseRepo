@@ -16,6 +16,7 @@ public class MovesAppConfiguration extends Configuration{
     public static final String COLLECTION_POSTS_HOME_INSIGHTS_TWITTER = "postsInsightsTwitter";
     public static final String COLLECTION_FOLLOWERS_TWITTER = "followersTwitter";
     public static final String COLLECTION_FOLLOWING_TWITTER = "followingTwitter";
+    public static final String COLLECTIONS_USER = "user";
 
     public static final String DB_NAME = "movesCelebrity";
 
@@ -23,6 +24,8 @@ public class MovesAppConfiguration extends Configuration{
 
     public static final String ERROR_UNEXPECTED =
             "Unable to process the request at the moment. Please try after some time";
+    public static final String EMAIL_EXIST = "User email already exist. Please try with new email id";
+    public static final String EMAIL_NOT_EXIST = "The email id entered is not registered.";
 
     static {
 

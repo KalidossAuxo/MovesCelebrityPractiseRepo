@@ -1,6 +1,7 @@
 package com.moves.movesCelebrity.resources.users;
 
 import com.moves.movesCelebrity.models.api.APIResponse;
+import com.moves.movesCelebrity.models.api.user.UserAuthDetails;
 import com.moves.movesCelebrity.models.api.user.UserProfile;
 import com.moves.movesCelebrity.resources.helpers.UserResourceHelper;
 import io.dropwizard.auth.Auth;
@@ -108,6 +109,33 @@ public class UserResource {
         }
 
         return response;
+    }
+
+    //For saving User Authentication Details
+    @PUT
+    @Path("authenticate")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @RolesAllowed("1")
+    @ApiOperation(
+            value = "Authentication",
+            notes = "To store User Authentication details",
+            response = APIResponse.class
+    )
+    @ApiImplicitParams({@ApiImplicitParam(name = "UserAgent",
+            value = "ios",
+            dataType = "string",
+            paramType = "header")})
+    public APIResponse authenticateUser( UserAuthDetails request) {
+
+        try {
+            return helper.addUserAuthDetails(request);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            APIResponse response = new APIResponse();
+            response.setError(ERROR_UNEXPECTED);
+            return response;
+        }
     }
 }
 
