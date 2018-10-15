@@ -1,5 +1,4 @@
 
-
 mongoHost: localhost
 mongoPortNumber: 27017
 mongoDatabaseName: moves
@@ -19,6 +18,16 @@ server:
 
 swagger:
   resourcePackage: com.moves.movesCelebrity.resources
+
+authExpiry: 108000
+
+#mail service details
+mailerAddress: dxtestuser@gmail.com
+mailerPassword: Dx@1#T3st3R
+mailServiceHost: smtp.gmail.com
+mailServicePort: 465
+mailServiceFactoryClass: javax.net.ssl.SSLSocketFactory
+mailServiceAuth: true
 
 
 

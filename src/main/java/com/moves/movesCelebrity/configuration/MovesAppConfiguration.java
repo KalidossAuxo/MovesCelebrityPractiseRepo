@@ -22,6 +22,7 @@ public class MovesAppConfiguration extends Configuration{
 
     public static final Map<String,String> PLATFORM_MAP ;
 
+    public static final String COLLECTIONS_ACCESS_TOKEN = "access-token";
     public static final String ERROR_UNEXPECTED =
             "Unable to process the request at the moment. Please try after some time";
     public static final String EMAIL_EXIST = "User email already exist. Please try with new email id";

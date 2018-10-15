@@ -128,8 +128,9 @@ public class UserResource {
             paramType = "header")})
     public APIResponse authenticateUser( UserAuthDetails request) {
 
+        String email = null;
         try {
-            return helper.addUserAuthDetails(request);
+            return helper.linkSocialMediaAccounts(request,email);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             APIResponse response = new APIResponse();

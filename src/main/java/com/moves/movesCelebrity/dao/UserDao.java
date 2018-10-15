@@ -16,36 +16,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.moves.movesCelebrity.configuration.MovesAppConfiguration.COLLECTIONS_USER;
+
 public class UserDao {
 
-    private static DBService mongoService = new DBService();
+    private static DBService mongoDBService;
     private static Gson gson = new GsonBuilder()
             .registerTypeAdapter(ObjectId.class, new ObjectIDGsonDeserializer())
             .registerTypeAdapter(ObjectId.class, new ObjectIDGsonSerializer())
             .setPrettyPrinting().create();
     private static Logger logger = LoggerFactory.getLogger(UserDao.class);
 
-    public static Object insert(UserProfile profile, String collectionName) {
-        String json = gson.toJson(profile);
-        Document doc = mongoService.insert(collectionName,Document.parse(json));
-        return doc;
-    }
-
-    public static void insert(Document document, String collectionName){
-        mongoService.insert(collectionName, document);
+    public static User insert(Document profile, String collectionName) {
+        Document doc = mongoDBService.insert(collectionName, profile);
+        return mongoDBService.parse(doc, User.class);
     }
 
     public static void insertMany(List<Document> documents, String collectionName){
-        mongoService.insert(collectionName, documents);
+        mongoDBService.insert(collectionName, documents);
     }
-
+    public static boolean update(String collectionName, Object searchQuery, Object updateQuery){
+        return mongoDBService.update(collectionName, searchQuery, updateQuery);
+    }
     public static Optional<User> findUserByEmail(String email){
-
         UserProfile query = new UserProfile(email);
-
-        Object object = mongoService.fetchOne("user", query, null);
+        Object object = mongoDBService.fetchOne(COLLECTIONS_USER, query, null);
         if(null!=object){
-            return Optional.of(mongoService.parse(object, User.class));
+            return Optional.of(mongoDBService.parse(object, User.class));
         }else {
             logger.info("findUserByEmail returned NULL for email ("+email+")");
             return Optional.empty();
@@ -60,9 +57,9 @@ public class UserDao {
         user.add(query);
         user.add(query1);
 
-        Object object = mongoService.fetchOne("user", user, null);
+        Object object = mongoDBService.fetchOne("user", user, null);
         if(null!=object){
-            return Optional.of(mongoService.parse(object, User.class));
+            return Optional.of(mongoDBService.parse(object, User.class));
         }else {
             logger.info("findUserByEmail returned NULL for email ("+email+")");
             return Optional.empty();

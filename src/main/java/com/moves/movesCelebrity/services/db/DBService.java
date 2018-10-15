@@ -2,14 +2,19 @@ package com.moves.movesCelebrity.services.db;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.mongodb.*;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.moves.movesCelebrity.configuration.MovesAppConfiguration;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.result.UpdateResult;
+import com.moves.movesCelebrity.configuration.MovesAPISystemConfiguration;
+import com.moves.movesCelebrity.datastore.DBConnection;
+import com.moves.movesCelebrity.datastore.MongoConnection;
+import com.moves.movesCelebrity.utils.serdesr.NumberLongGsonDeserializer;
+import com.moves.movesCelebrity.utils.serdesr.NumberLongGsonSerializer;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonDeserializer;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonSerializer;
 import org.bson.Document;
@@ -17,30 +22,75 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class DBService implements DBServiceInterface {
-
-    private static MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));;
     private static MongoDatabase database;
-    private String dbString = MovesAppConfiguration.DB_NAME;
+    private MongoConnection connection;
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(ObjectId.class, new ObjectIDGsonDeserializer())
             .registerTypeAdapter(ObjectId.class, new ObjectIDGsonSerializer())
-//            .registerTypeAdapter(Long.class, new NumberLongGsonDeserializer())
-//            .registerTypeAdapter(Long.class, new NumberLongGsonSerializer())
+            .registerTypeAdapter(Long.class, new NumberLongGsonDeserializer())
+            .registerTypeAdapter(Long.class, new NumberLongGsonSerializer())
             .setPrettyPrinting().create();
 
     private static Logger logger = LoggerFactory.getLogger(DBService.class);
+    private static Map<DBConnection, MongoClient> mongoClients = new ConcurrentHashMap<>();
+
+    public DBService(MongoConnection connection) {
+        this.connection = connection;
+        open();
+    }
+
+    private void open() {
+
+        MongoClient mongoClient = mongoClients.get(this.connection);
+        if (mongoClient == null) {
+            MongoConnection connection = (MongoConnection) this.connection;
+            ServerAddress serverAddress = new ServerAddress(connection.getHost(), connection.getPort());
+            MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(5).build();
+            mongoClient = new MongoClient(Collections.singletonList(serverAddress), options);
+            mongoClients.put(this.connection, mongoClient);
+        }
+    }
+
+    private MongoDatabase getMongoDb() {
+        MongoClient mongoClient = mongoClients.get(this.connection);
+        if (mongoClient == null) {
+            open();
+        }
+        return mongoClient.getDatabase(this.connection.getDb());
+    }
+
+    public void close(){
+        MongoClient client = mongoClients.get(this.connection);
+        client.close();
+    }
+
 
     public MongoCollection getCollection(String collectionName) {
-        database = mongoClient.getDatabase(dbString);
+        database = mongoClients.get(this.connection).getDatabase(MovesAPISystemConfiguration.getMongoDatabaseName());
         return  database.getCollection(collectionName);
     }
 
     public void delete (String id, String collectionName) {
         BasicDBObject queryObj = new BasicDBObject("_id", new ObjectId(id));
         getCollection(collectionName).deleteOne(queryObj);
+    }
+
+    @Override
+    public Document insertDocumentWithExpirey(Document document, String collectionName) {
+        if (collectionName != null) {
+            MongoDatabase mongoDatabase = getMongoDb();
+            MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
+            collection.insertOne(document);
+            return document;
+        }
+        return null;
     }
 
     public Document fetch (List<Document> queryList, String collectionName) {
@@ -50,11 +100,12 @@ public class DBService implements DBServiceInterface {
 
     @Override
     public Object fetchOne(String collectionName, Object searchQuery, Object sortQuery) {
-        MongoCursor mongoCursor = readFromDB(collectionName, searchQuery, null, null, sortQuery, null, 0);
+        MongoCursor mongoCursor = readFromDB(collectionName, searchQuery, null, null, sortQuery, null, 1);
         if (null != mongoCursor)
             if (mongoCursor.hasNext()) {
                 return (mongoCursor.next());
             }
+
         return null;
     }
 
@@ -72,7 +123,17 @@ public class DBService implements DBServiceInterface {
         getCollection(collectionName).replaceOne(queryDocument, updatedDocument);
     }
 
-
+    public boolean update(String collectionName, Object searchQuery, Object updateQuery) {
+        try {
+            MongoCollection collection = getCollection(collectionName);
+            UpdateResult result = collection.updateOne(Document.parse(gson.toJson(searchQuery)),
+                    new Document("$set", Document.parse(gson.toJson(updateQuery))));
+            return result.getModifiedCount() > 0;
+        } catch (MongoException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
     private MongoCursor readFromDB(String collectionName, Object searchQuery,
                                    List<String> selectFields, List<String> ignoreFields,
                                    Object sortQuery, Integer currentPage, int limit) {
@@ -131,5 +192,12 @@ public class DBService implements DBServiceInterface {
 
     public static <T> String stringify(Object obj, Class<T> tClass) {
         return gson.toJson(obj, tClass);
+    }
+
+    public void createTimeIndex(String collectionName) {
+        MongoDatabase mongoDatabase = getMongoDb();
+        MongoCollection collection = mongoDatabase.getCollection(collectionName);
+        collection.createIndex(Indexes.ascending("expireAt"),
+                new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
     }
 }

@@ -11,4 +11,5 @@ public interface DBServiceInterface {
     Document insert(String collectionName, List<Document> documents);
     void update(String collectionName, Document queryDocument, Document updatedDocument);
     void delete(String id, String collectionName);
+    Document insertDocumentWithExpirey(Document document, String collectionName);
 }
