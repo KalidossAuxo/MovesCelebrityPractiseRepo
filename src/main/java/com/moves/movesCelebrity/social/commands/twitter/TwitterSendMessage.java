@@ -54,8 +54,7 @@ public class TwitterSendMessage implements Command<Document,String> {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
 
-            DirectMessage message = twitter.sendDirectMessage(screenName, text);
-
+        DirectMessage message = twitter.sendDirectMessage(screenName, text);
         return mapper.readValue(gson.toJson(message),new TypeReference<Document>(){});
     }
 }
