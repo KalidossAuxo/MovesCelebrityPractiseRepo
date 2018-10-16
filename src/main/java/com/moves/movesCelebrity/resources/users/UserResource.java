@@ -1,6 +1,7 @@
 package com.moves.movesCelebrity.resources.users;
 
 import com.moves.movesCelebrity.models.api.APIResponse;
+import com.moves.movesCelebrity.models.api.user.Account;
 import com.moves.movesCelebrity.models.api.user.UserAuthDetails;
 import com.moves.movesCelebrity.models.api.user.UserProfile;
 import com.moves.movesCelebrity.resources.helpers.UserResourceHelper;
@@ -14,6 +15,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import static com.moves.movesCelebrity.configuration.MovesAppConfiguration.ERROR_UNEXPECTED;
@@ -112,7 +115,7 @@ public class UserResource {
     }
 
     //For saving User Authentication Details
-    @PUT
+    @PATCH
     @Path("authenticate")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
@@ -125,12 +128,18 @@ public class UserResource {
     @ApiImplicitParams({@ApiImplicitParam(name = "UserAgent",
             value = "ios",
             dataType = "string",
-            paramType = "header")})
-    public APIResponse authenticateUser( UserAuthDetails request) {
+            paramType = "header"
 
-        String email = null;
+    ),@ApiImplicitParam(name = "UserAccessToken",
+            value = "Test1234",
+            dataType = "string",
+            paramType = "header"
+    )})
+    public APIResponse authenticateUser(UserAuthDetails request, @Context HttpHeaders httpHeaders) {
+
+        String accessToken = httpHeaders.getHeaderString("UserAccessToken");
         try {
-            return helper.linkSocialMediaAccounts(request,email);
+            return helper.linkSocialMediaAccounts(request,accessToken);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             APIResponse response = new APIResponse();
@@ -138,5 +147,75 @@ public class UserResource {
             return response;
         }
     }
+
+    //For Social media Account sign out
+
+    @PATCH
+    @Path("signout")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @RolesAllowed("1")
+    @ApiOperation(
+            value = "User Sign out",
+            notes = "To remove User Social media account while Sign out",
+            response = APIResponse.class
+    )
+    @ApiImplicitParams({@ApiImplicitParam(name = "UserAgent",
+            value = "ios",
+            dataType = "string",
+            paramType = "header"
+
+    ),@ApiImplicitParam(name = "UserAccessToken",
+            value = "Test1234",
+            dataType = "string",
+            paramType = "header"
+    )})
+    public APIResponse removeSocialMediaAccount(Account account , @Context HttpHeaders httpHeaders) {
+
+        String accessToken = httpHeaders.getHeaderString("UserAccessToken");
+        try {
+            return helper.removeSocialMediaAccounts(account,accessToken);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            APIResponse response = new APIResponse();
+            response.setError(ERROR_UNEXPECTED);
+            return response;
+        }
+    }
+
+//    //For removing a User from Moves Application
+//
+//    @DELETE
+//    @Path("/removeUser")
+//    //@Consumes(APPLICATION_JSON)
+//    @Produces(APPLICATION_JSON)
+//    @RolesAllowed("1")
+//    @ApiOperation(
+//            value = "User Removal",
+//            notes = "To remove User from Moves Application",
+//            response = APIResponse.class
+//    )
+//    @ApiImplicitParams({@ApiImplicitParam(name = "UserAgent",
+//            value = "ios",
+//            dataType = "string",
+//            paramType = "header"
+//
+//    ),@ApiImplicitParam(name = "UserAccessToken",
+//            value = "Test1234",
+//            dataType = "string",
+//            paramType = "header"
+//    )})
+//    public APIResponse removeMovesUser(@Context HttpHeaders httpHeaders) {
+//
+//        String accessToken = httpHeaders.getHeaderString("UserAccessToken");
+//        try {
+//            return helper.removeMovesUser(accessToken);
+//        } catch (Exception e) {
+//            LOGGER.error(e.getMessage(), e);
+//            APIResponse response = new APIResponse();
+//            response.setError(ERROR_UNEXPECTED);
+//            return response;
+//        }
+//    }
 }
 

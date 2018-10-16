@@ -123,6 +123,10 @@ public class DBService implements DBServiceInterface {
         getCollection(collectionName).replaceOne(queryDocument, updatedDocument);
     }
 
+    //To delete a User from Moves Application
+    public void deleteUser (String collectionName, Document queryDocument) {
+        getCollection(collectionName).deleteOne(queryDocument);
+    }
     public boolean update(String collectionName, Object searchQuery, Object updateQuery) {
         try {
             MongoCollection collection = getCollection(collectionName);

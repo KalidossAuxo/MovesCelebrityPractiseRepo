@@ -3,6 +3,7 @@ package com.moves.movesCelebrity.application;
 import com.moves.movesCelebrity.configuration.MovesAPISystemConfiguration;
 import com.moves.movesCelebrity.resources.HealthCheckResource;
 import com.moves.movesCelebrity.resources.users.TwitterPostFetchCommand;
+import com.moves.movesCelebrity.resources.users.TwitterSendMessage;
 import com.moves.movesCelebrity.resources.users.TwitterStatusUpdateCommand;
 import com.moves.movesCelebrity.resources.users.UserResource;
 import io.dropwizard.Application;
@@ -46,6 +47,7 @@ public class MovesApplication extends Application<MovesAPISystemConfiguration> {
         environment.jersey().register(new UserResource());
         environment.jersey().register(new TwitterPostFetchCommand());
         environment.jersey().register(new TwitterStatusUpdateCommand());
+        environment.jersey().register(new TwitterSendMessage());
 
         /*Map<String ,String > platformMap = MovesAppConfiguration.PLATFORM_MAP;
         ArrayList<CompletableFuture> futureList = new ArrayList<>();

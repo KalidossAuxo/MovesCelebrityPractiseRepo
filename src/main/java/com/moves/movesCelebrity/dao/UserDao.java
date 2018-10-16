@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.moves.movesCelebrity.models.api.user.UserProfile;
 import com.moves.movesCelebrity.models.business.user.User;
+import com.moves.movesCelebrity.models.query.UserIdQuery;
 import com.moves.movesCelebrity.services.db.DBService;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonDeserializer;
 import com.moves.movesCelebrity.utils.serdesr.ObjectIDGsonSerializer;
@@ -35,8 +36,8 @@ public class UserDao {
     public static void insertMany(List<Document> documents, String collectionName){
         mongoDBService.insert(collectionName, documents);
     }
-    public static boolean update(String collectionName, Object searchQuery, Object updateQuery){
-        return mongoDBService.update(collectionName, searchQuery, updateQuery);
+    public static boolean update( Object searchQuery, Object updateQuery){
+        return mongoDBService.update(COLLECTIONS_USER, searchQuery, updateQuery);
     }
     public static Optional<User> findUserByEmail(String email){
         UserProfile query = new UserProfile(email);
@@ -48,6 +49,24 @@ public class UserDao {
             return Optional.empty();
         }
     }
+
+    //User Authentication details
+    public static Optional<User> findUserByAccessToken(String accessToken){
+        UserIdQuery query = new UserIdQuery();
+        query.setAccessToken(accessToken);
+        Object object = mongoDBService.fetchOne(COLLECTIONS_USER, query, null);
+        if(null!=object){
+            return Optional.of(mongoDBService.parse(object, User.class));
+        }else {
+            logger.info("findUserByAccessToken returned NULL for accessToken ("+accessToken+")");
+            return Optional.empty();
+        }
+    }
+
+//    //To remove a User from  Moves application
+//    public static void delete( Document searchQuery) {
+//        mongoDBService.deleteUser(COLLECTIONS_USER, searchQuery);
+//    }
     //Added by Kalidoss for Login Testing
     public static Optional<User> findUserByEmailAndPassword(String email,String password){
 

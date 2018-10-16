@@ -50,6 +50,7 @@ public class TwitterSendMessage implements Command<Document,String> {
 
 
     public Document sendMessage(String text) throws TwitterException, IOException {
+        logger.info("Twitter send message function is called");
         String screenName = "SKDoss18";
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));

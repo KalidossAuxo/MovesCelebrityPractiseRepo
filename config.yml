@@ -1,10 +1,11 @@
 
+
 mongoHost: localhost
 mongoPortNumber: 27017
-mongoDatabaseName: moves
+mongoDatabaseName: moves1
 documentFolder: documents
 baseUrl: http://localhost:8083
-#authExpiry: 86400000
+#authExpiry: 180000000000
 
 
 # Server port number specifications
@@ -28,6 +29,3 @@ mailServiceHost: smtp.gmail.com
 mailServicePort: 465
 mailServiceFactoryClass: javax.net.ssl.SSLSocketFactory
 mailServiceAuth: true
-
-
-

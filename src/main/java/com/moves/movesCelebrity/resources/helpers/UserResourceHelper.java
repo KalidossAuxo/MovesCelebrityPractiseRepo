@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.moves.movesCelebrity.configuration.MovesAppConfiguration;
 import com.moves.movesCelebrity.constants.MailerConstants;
+import com.moves.movesCelebrity.dao.AccessTokenDao;
 import com.moves.movesCelebrity.dao.UserDao;
 import com.moves.movesCelebrity.models.api.APIResponse;
+import com.moves.movesCelebrity.models.api.user.Account;
+import com.moves.movesCelebrity.models.api.user.UserAccessToken;
 import com.moves.movesCelebrity.models.api.user.UserAuthDetails;
 import com.moves.movesCelebrity.models.api.user.UserProfile;
 import com.moves.movesCelebrity.models.business.email.MailMessage;
@@ -76,27 +79,97 @@ public class UserResourceHelper {
     }
 
     //For User Authentication details
-    public APIResponse linkSocialMediaAccounts(UserAuthDetails request,String email) {
+    public APIResponse linkSocialMediaAccounts(UserAuthDetails request, String accessToken) {
         APIResponse response = new APIResponse();
-        if (UserDao.findUserByEmail(email).isPresent()) {
-            User user = UserDao.findUserByEmail(email).get();
 
-            UserAuthDetails authDetails = new UserAuthDetails();
-            authDetails.setTwitterId(request.getTwitterId());
-            authDetails.setTwitterAccessToken(request.getTwitterAccessToken());
-            authDetails.setTwitterAccessTokenSecret(request.getTwitterAccessTokenSecret());
-            authDetails.setFbId(request.getFbId());
-            authDetails.setFbAccessToken(request.getFbAccessToken());
-            authDetails.setInstaId(request.getInstaId());
-            authDetails.setInstaAccessToken(request.getInstaAccessToken());
+        System.out.println("The access token is :"+ accessToken);
+        System.out.println("The twitter id is : "+request.getTwitterId());
+        if (UserDao.findUserByAccessToken(accessToken).isPresent()) {
+            Boolean access = UserDao.findUserByAccessToken(accessToken).isPresent();
+            request.setTwitterId(request.getTwitterId());
+            User user = UserDao.findUserByAccessToken(accessToken).get();
 
-            Document document = Document.parse(gson.toJson(authDetails));
-            UserDao.update(COLLECTIONS_USER, authDetails, user);//Insert to DB
+            request.setTwitterAccessToken(request.getTwitterAccessToken());
+            request.setTwitterAccessTokenSecret(request.getTwitterAccessTokenSecret());
+            request.setFbId(request.getFbId());
+            request.setFbAccessToken(request.getFbAccessToken());
+            request.setInstaId(request.getInstaId());
+            request.setInstaAccessToken(request.getInstaAccessToken());
+
+            Document document = Document.parse(gson.toJson(request));
+            int count = 0;
+            UserDao.update(user,request);//Insert to DB
+            count++;
+            if(count>0){
+                System.out.println("Data inserted successfully");
+            }
             response.setData(document);
             return response;
         }
         response.setError(MovesAppConfiguration.ERROR_UNEXPECTED);
         return response;
     }
+
+    //For Social media Account sign out
+
+    public APIResponse removeSocialMediaAccounts(Account account , String accessToken) {
+        APIResponse response = new APIResponse();
+
+        System.out.println("The access token is :"+ accessToken);
+        if (AccessTokenDao.findUserByAccessToken(accessToken).isPresent()) {
+            UserAccessToken user = AccessTokenDao.findUserByAccessToken(accessToken).get();
+
+            System.out.println("User is " +user);
+
+            UserAuthDetails request = new UserAuthDetails();
+            if(account.getAccount() == "twitter"){
+                request.setTwitterId(null);
+                request.setTwitterAccessToken(null);
+                request.setTwitterAccessTokenSecret(null);
+            }
+            if(account.getAccount() == "fb"){
+                request.setFbId(null);
+                request.setFbAccessToken(null);
+            }
+            if (account.getAccount() == "instagram"){
+                request.setInstaId(null);
+                request.setInstaAccessToken(null);
+            }
+            Document document = Document.parse(gson.toJson(request));
+            int count = 0;
+            UserDao.update(user,request);//Insert to DB
+            count++;
+            if(count>0){
+                System.out.println("Data removed successfully");
+            }
+            response.setData(document);
+            return response;
+        }
+        response.setError(MovesAppConfiguration.ERROR_UNEXPECTED);
+        return response;
+    }
+
+//    //For removing a User from Moves Application
+//
+//    public APIResponse removeMovesUser(String accessToken) {
+//        APIResponse response = new APIResponse();
+//
+//        System.out.println("The access token is :"+ accessToken);
+//        if (AccessTokenDao.findUserByAccessToken(accessToken).isPresent()) {
+//            UserAccessToken user = AccessTokenDao.findUserByAccessToken(accessToken).get();
+//
+//            Document document = Document.parse(gson.toJson(user));
+//            int count = 0;
+//            UserDao.delete(document);//Insert to DB
+//            count++;
+//            if(count>0){
+//                System.out.println("Data removed successfully");
+//            }
+//            response.setData(document);
+//            return response;
+//        }
+//        response.setError(MovesAppConfiguration.ERROR_UNEXPECTED);
+//        return response;
+//    }
 }
 

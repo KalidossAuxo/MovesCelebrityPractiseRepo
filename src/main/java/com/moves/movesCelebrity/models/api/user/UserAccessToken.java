@@ -46,4 +46,5 @@ public class UserAccessToken implements Serializable{
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
 }
